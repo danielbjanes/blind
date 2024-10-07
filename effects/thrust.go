@@ -14,7 +14,7 @@ type ThrustParticle struct {
 	Velocity           rl.Vector2
 	Ttl                int32
 	Direction          float32
-	Magnitude          rl.Vector2
+	Magnitude          float32
 	AccelerationScaler float32
 }
 
@@ -31,8 +31,8 @@ func Initalize(position rl.Vector2, ttl int32, direction float32, magnitude floa
 		Ttl:                ttl,
 		Direction:          direction,
 		Velocity:           initVel,
-		Magnitude:          initVel,
-		AccelerationScaler: 0,
+		Magnitude:          magnitude,
+		AccelerationScaler: 1,
 	}
 }
 
@@ -43,55 +43,30 @@ func (particle *ThrustParticle) Update() {
 
 func (p *ThrustParticle) applyForce() {
 
-	// if (math.Abs(float64(p.Velocity.X)) > ENTROPY) || (math.Abs(float64(p.Velocity.Y)) > ENTROPY) {
-	// 	p.AccelerationScaler += ENTROPY
-	// } else {
-	// 	p.AccelerationScaler = 0
-	// }
-
-	// if math.Abs(float64(p.Velocity.X)) < 0.2 || math.Abs(float64(p.Velocity.Y)) < 0.2 {
-	// 	p.AccelerationScaler = 0
-	// } else {
-	// 	p.AccelerationScaler += ENTROPY
-	// }
-	p.AccelerationScaler += ENTROPY
+	if p.AccelerationScaler-ENTROPY > 0 {
+		p.AccelerationScaler -= ENTROPY
+	} else {
+		p.AccelerationScaler = 0
+	}
+	// p.AccelerationScaler -= ENTROPY
 
 	// Calculate the acceleration components
 	rad := p.Direction - 180*(math.Pi/180.0) // Convert direction to radians
 	acceleration := rl.Vector2{
-		X: float32(math.Cos(float64(rad))) * float32(p.AccelerationScaler),
-		Y: float32(math.Sin(float64(rad))) * float32(p.AccelerationScaler),
+		X: float32(math.Cos(float64(rad))) * p.Magnitude * (float32(p.AccelerationScaler)),
+		Y: float32(math.Sin(float64(rad))) * p.Magnitude * (float32(p.AccelerationScaler)),
 	}
 
 	fmt.Println("--")
 	fmt.Printf("vel: %f, %f\n", p.Velocity.X, p.Velocity.Y)
 	fmt.Printf("acc: %f, %f\n", acceleration.X, acceleration.Y)
 
-	xdir, ydir := 0.0, 0.0
-
-	if p.Magnitude.X > 0 {
-		xdir = 1.0
-	} else {
-		xdir = -1.0
-	}
-
-	if p.Magnitude.Y > 0 {
-		ydir = 1.0
-	} else {
-		ydir = -1.0
-	}
-
-	if p.Velocity.X+acceleration.X < float32(xdir)*0.1 {
-		p.Velocity.X = 0
-	} else {
+	if p.AccelerationScaler > 0 {
 		p.Velocity.X += acceleration.X
-	}
-
-	if p.Velocity.Y+acceleration.Y < float32(ydir)*0.1 {
-		p.Velocity.Y = 0
-	} else {
 		p.Velocity.Y += acceleration.Y
 	}
+	// p.Velocity.X += acceleration.X
+	// p.Velocity.Y += acceleration.Y
 
 	p.Position.X += p.Velocity.X
 	p.Position.Y += p.Velocity.Y
