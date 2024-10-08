@@ -36,7 +36,7 @@ func Initalize(position rl.Vector2) *Ship {
 }
 
 func (s *Ship) Update() {
-	s.Paricles = s.handleInput(s.Paricles)
+	s.handleInput()
 	s.applyForce()
 	s.draw()
 
@@ -56,13 +56,13 @@ func (s *Ship) Update() {
 	}
 }
 
-func (s *Ship) handleInput(particles []*p.ThrustParticle) []*p.ThrustParticle {
+func (s *Ship) handleInput() {
 	verSpin, horAcc := 0.0, 0.0
 
 	if rl.IsKeyDown(rl.KeyW) {
 		horAcc += -ACC
-		particles = append(
-			particles,
+		s.Paricles = append(
+			s.Paricles,
 			p.Initalize(
 				rl.Vector2{X: 6, Y: 1},
 				rl.Vector2{X: s.Position.X + 6, Y: s.Position.Y + 1},
@@ -73,8 +73,8 @@ func (s *Ship) handleInput(particles []*p.ThrustParticle) []*p.ThrustParticle {
 	if rl.IsKeyDown(rl.KeyS) {
 		horAcc += ACC / 10
 
-		particles = append(
-			particles,
+		s.Paricles = append(
+			s.Paricles,
 			p.Initalize(
 				rl.Vector2{X: 11, Y: 0},
 				rl.Vector2{X: s.Position.X + 11, Y: s.Position.Y},
@@ -99,8 +99,6 @@ func (s *Ship) handleInput(particles []*p.ThrustParticle) []*p.ThrustParticle {
 		X: float32(math.Cos(float64(rad))) * float32(horAcc),
 		Y: float32(math.Sin(float64(rad))) * float32(horAcc),
 	}
-
-	return particles
 
 }
 
