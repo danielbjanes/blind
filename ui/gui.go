@@ -3,6 +3,7 @@ package ui
 import (
 	s "blind/ship"
 	t "blind/types"
+	"fmt"
 	"math"
 	"strconv"
 
@@ -37,6 +38,7 @@ func drawShipStats(ship *s.Ship) {
 	// rl.DrawLine(centerX-20, centerY+20, centerX+20, centerY-20, rl.White)
 
 	drawVelocity(ship)
+	drawAcc(ship)
 
 	// Coordinates
 	rl.DrawText("{ "+strconv.Itoa(int(ship.Position.X))+
@@ -69,6 +71,42 @@ func drawVelocity(ship *s.Ship) {
 	rl.DrawRectangle(centerX-1, centerY-1, 3, int32(velocityMagnitude), rl.Red)
 
 	rl.PopMatrix()
+}
+
+func drawAcc(ship *s.Ship) {
+
+	centerX, centerY := int32(90), int32(90)
+
+	if ship.Acceleration.X > 0 {
+		rl.DrawRectangle(centerX+8, centerY-5, int32(ship.Acceleration.X*30000), 2, rl.Red)
+	} else {
+
+		fmt.Println("its workin")
+		rl.PushMatrix()
+
+		// Translate to the center of rotation
+		rl.Translatef(float32(centerX-5), float32(centerY+8), 0)
+
+		// Apply the rotation
+		rl.Rotatef(180, 0, 0, 1)
+
+		// Translate back to the original position
+		rl.Translatef(-float32(centerX-5), -float32(centerY+8), 0)
+
+		// Draw the rectangle
+		rl.DrawRectangle(centerX-5, centerY+8, int32(ship.Acceleration.X*30000), 2, rl.Red)
+
+		rl.PopMatrix()
+	}
+
+	fmt.Printf("acc: %f\n", ship.Acceleration.X)
+
+	// if ship.Acceleration.Y > 0 {
+
+	// } else {
+
+	// }
+
 }
 
 func drawDirection(ship *s.Ship) {
