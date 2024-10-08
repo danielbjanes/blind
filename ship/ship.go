@@ -10,7 +10,7 @@ import (
 	// "fmt"
 )
 
-const ACC = 0.01
+const ACC = 0.005
 const TURN_RATE = 1
 
 type Ship struct {
