@@ -5,8 +5,6 @@ import (
 
 	s "blind/ship"
 
-	e "blind/effects"
-
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -20,20 +18,17 @@ func main() {
 
 	ship := s.Initalize(rl.Vector2{X: 400, Y: 400})
 
-	p := e.Initalize(rl.Vector2{X: 400, Y: 400}, 1, 180, 4)
-
 	for !rl.WindowShouldClose() {
 		// update(state)
-		draw(ship, p)
+		draw(ship)
 	}
 }
 
-func draw(ship *s.Ship, p *e.ThrustParticle) {
+func draw(ship *s.Ship) {
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.Black)
 
 	ship.Update()
-	p.Update()
 
 	rl.DrawText("fps: "+strconv.Itoa(int(rl.GetFPS())), 20, 20, 20, rl.Red)
 	rl.EndDrawing()

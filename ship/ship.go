@@ -2,6 +2,9 @@ package ship
 
 import (
 	"math"
+	"math/rand"
+
+	p "blind/effects"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 	// "fmt"
@@ -16,6 +19,7 @@ type Ship struct {
 	Velocity     rl.Vector2
 	Acceleration rl.Vector2
 	Direction    float32
+	Paricles     []*p.ThrustParticle
 }
 
 func Initalize(position rl.Vector2) *Ship {
@@ -26,26 +30,56 @@ func Initalize(position rl.Vector2) *Ship {
 		Velocity:     rl.Vector2{X: 0, Y: 0},
 		Acceleration: rl.Vector2{X: 0, Y: 0},
 		Direction:    0,
+		Paricles:     []*p.ThrustParticle{},
 	}
 
 }
 
 func (s *Ship) Update() {
-	s.handleInput()
+	s.Paricles = s.handleInput(s.Paricles)
 	s.applyForce()
 	s.draw()
+
+	// Iterate over the particles slice
+	for i := 0; i < len(s.Paricles); {
+		particle := s.Paricles[i]
+		particle.Update()
+
+		// Condition to remove the particle (example: if particle is out of bounds)
+		if particle.StoppedX && particle.StoppedY {
+			// Remove the particle by appending slices before and after the current index
+			s.Paricles = append(s.Paricles[:i], s.Paricles[i+1:]...)
+		} else {
+			// Only increment the index if no removal happened
+			i++
+		}
+	}
 }
 
-func (s *Ship) handleInput() {
-
+func (s *Ship) handleInput(particles []*p.ThrustParticle) []*p.ThrustParticle {
 	verSpin, horAcc := 0.0, 0.0
 
 	if rl.IsKeyDown(rl.KeyW) {
 		horAcc += -ACC
+		particles = append(
+			particles,
+			p.Initalize(
+				rl.Vector2{X: 6, Y: 1},
+				rl.Vector2{X: s.Position.X + 6, Y: s.Position.Y + 1},
+				s.Direction+rand.Float32()*12-6,
+				(rand.Float32()+2)*2))
 	}
 
 	if rl.IsKeyDown(rl.KeyS) {
 		horAcc += ACC / 10
+
+		particles = append(
+			particles,
+			p.Initalize(
+				rl.Vector2{X: 11, Y: 0},
+				rl.Vector2{X: s.Position.X + 11, Y: s.Position.Y},
+				s.Direction+rand.Float32()*12-2-180,
+				(rand.Float32()*2)))
 	}
 
 	if rl.IsKeyDown(rl.KeyA) {
@@ -65,6 +99,8 @@ func (s *Ship) handleInput() {
 		X: float32(math.Cos(float64(rad))) * float32(horAcc),
 		Y: float32(math.Sin(float64(rad))) * float32(horAcc),
 	}
+
+	return particles
 
 }
 
@@ -89,7 +125,7 @@ func (s *Ship) draw() {
 
 	// Draw the ship
 	rl.DrawRectangle(int32(s.Position.X)-5, int32(s.Position.Y)-10, 10, 20, rl.White)
-	rl.DrawCircle(int32(s.Position.X), int32(s.Position.Y), 2, rl.Red)
+	// rl.DrawCircle(int32(s.Position.X), int32(s.Position.Y), 2, rl.Blue)
 
 	// Restore the previous transformation matrix
 	rl.PopMatrix()
