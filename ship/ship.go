@@ -4,10 +4,9 @@ import (
 	"math"
 	"math/rand"
 
-	p "blind/effects"
+	p "blind/thrust"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
-	// "fmt"
 )
 
 const ACC = 0.001

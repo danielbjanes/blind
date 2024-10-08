@@ -1,44 +1,38 @@
 package main
 
 import (
-	"strconv"
-
 	s "blind/ship"
+	t "blind/types"
+	ui "blind/ui"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-type State struct {
-	WindowHeight int32
-	WindowWidth  int32
-}
-
 func main() {
-	initalization()
-
-	ship := s.Initalize(rl.Vector2{X: 400, Y: 400})
+	state := initalization()
 
 	for !rl.WindowShouldClose() {
 		// update(state)
-		draw(ship)
+		draw(state)
 	}
 }
 
-func draw(ship *s.Ship) {
+func draw(state *t.State) {
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.Black)
 
-	ship.Update()
+	ui.Draw(state)
+	state.Ship.Update()
 
-	rl.DrawText("fps: "+strconv.Itoa(int(rl.GetFPS())), 20, 20, 20, rl.Red)
 	rl.EndDrawing()
 }
 
-func initalization() *State {
+func initalization() *t.State {
 
-	state := &State{
+	state := &t.State{
 		WindowWidth:  800,
 		WindowHeight: 800,
+		Ship:         s.Initalize(rl.Vector2{X: 400, Y: 400}),
 	}
 
 	rl.InitWindow(state.WindowWidth, state.WindowHeight, "")
