@@ -84,10 +84,42 @@ func (s *Ship) handleInput() {
 
 	if rl.IsKeyDown(rl.KeyA) {
 		verSpin += -TURN_RATE
+
+		s.Paricles = append(
+			s.Paricles,
+			p.Initalize(
+				rl.Vector2{X: 5, Y: -8},
+				rl.Vector2{X: s.Position.X + 5, Y: s.Position.Y - 8},
+				s.Direction+rand.Float32()*2-90,
+				(rand.Float32())))
+
+		s.Paricles = append(
+			s.Paricles,
+			p.Initalize(
+				rl.Vector2{X: 5, Y: -8},
+				rl.Vector2{X: s.Position.X + 5, Y: s.Position.Y - 8},
+				s.Direction+rand.Float32()*2+90,
+				(rand.Float32())))
 	}
 
 	if rl.IsKeyDown(rl.KeyD) {
 		verSpin += TURN_RATE
+
+		s.Paricles = append(
+			s.Paricles,
+			p.Initalize(
+				rl.Vector2{X: 5, Y: 8},
+				rl.Vector2{X: s.Position.X + 5, Y: s.Position.Y + 8},
+				s.Direction+rand.Float32()*2+90,
+				(rand.Float32())))
+
+		s.Paricles = append(
+			s.Paricles,
+			p.Initalize(
+				rl.Vector2{X: 5, Y: 8},
+				rl.Vector2{X: s.Position.X + 5, Y: s.Position.Y + 8},
+				s.Direction+rand.Float32()*2-90,
+				(rand.Float32())))
 	}
 
 	// Update the ship's direction
