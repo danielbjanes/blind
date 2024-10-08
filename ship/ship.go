@@ -10,7 +10,7 @@ import (
 	// "fmt"
 )
 
-const ACC = 0.005
+const ACC = 0.001
 const TURN_RATE = 1
 
 type Ship struct {
@@ -57,80 +57,157 @@ func (s *Ship) Update() {
 }
 
 func (s *Ship) handleInput() {
-	verSpin, horAcc := 0.0, 0.0
+	verSpin, horAcc, verAcc := 0.0, 0.0, 0.0
 
-	if rl.IsKeyDown(rl.KeyW) {
-		horAcc += -ACC
-		s.Paricles = append(
-			s.Paricles,
-			p.Initalize(
-				rl.Vector2{X: 6, Y: 1},
-				rl.Vector2{X: s.Position.X + 6, Y: s.Position.Y + 1},
-				s.Direction+rand.Float32()*12-6,
-				(rand.Float32()+2)*2))
+	if rl.IsKeyDown(rl.KeyLeftShift) {
+		if rl.IsKeyDown(rl.KeyW) {
+			verAcc += -ACC / 10
+			s.Paricles = append(
+				s.Paricles,
+				p.Initalize(
+					rl.Vector2{X: 6, Y: 1},
+					rl.Vector2{X: s.Position.X + 6, Y: s.Position.Y + 1},
+					s.Direction+rand.Float32()*12-6,
+					rand.Float32()*2))
+		}
+
+		if rl.IsKeyDown(rl.KeyS) {
+			verAcc += ACC / 10
+
+			s.Paricles = append(
+				s.Paricles,
+				p.Initalize(
+					rl.Vector2{X: 11, Y: 0},
+					rl.Vector2{X: s.Position.X + 11, Y: s.Position.Y},
+					s.Direction+rand.Float32()*12-2-180,
+					(rand.Float32()*2)))
+		}
+
+		if rl.IsKeyDown(rl.KeyA) {
+			horAcc += -ACC / 10
+
+			s.Paricles = append(
+				s.Paricles,
+				p.Initalize(
+					rl.Vector2{X: 5, Y: -8},
+					rl.Vector2{X: s.Position.X + 5, Y: s.Position.Y - 8},
+					s.Direction+rand.Float32()*2-90,
+					(rand.Float32())))
+
+			s.Paricles = append(
+				s.Paricles,
+				p.Initalize(
+					rl.Vector2{X: 5, Y: 8},
+					rl.Vector2{X: s.Position.X + 5, Y: s.Position.Y + 8},
+					s.Direction+rand.Float32()*2-90,
+					(rand.Float32())))
+		}
+
+		if rl.IsKeyDown(rl.KeyD) {
+			horAcc += ACC / 10
+
+			s.Paricles = append(
+				s.Paricles,
+				p.Initalize(
+					rl.Vector2{X: 5, Y: 8},
+					rl.Vector2{X: s.Position.X + 5, Y: s.Position.Y + 8},
+					s.Direction+rand.Float32()*2+90,
+					(rand.Float32())))
+
+			s.Paricles = append(
+				s.Paricles,
+				p.Initalize(
+					rl.Vector2{X: 5, Y: -8},
+					rl.Vector2{X: s.Position.X + 5, Y: s.Position.Y - 8},
+					s.Direction+rand.Float32()*2+90,
+					(rand.Float32())))
+
+		}
+	} else {
+		if rl.IsKeyDown(rl.KeyW) {
+			verAcc += -ACC
+			s.Paricles = append(
+				s.Paricles,
+				p.Initalize(
+					rl.Vector2{X: 6, Y: 1},
+					rl.Vector2{X: s.Position.X + 6, Y: s.Position.Y + 1},
+					s.Direction+rand.Float32()*12-6,
+					(rand.Float32()+2)*2))
+
+			s.Paricles = append(
+				s.Paricles,
+				p.Initalize(
+					rl.Vector2{X: 6, Y: 1},
+					rl.Vector2{X: s.Position.X + 6, Y: s.Position.Y + 1},
+					s.Direction+rand.Float32()*12-6,
+					(rand.Float32()+2)*2))
+		}
+
+		if rl.IsKeyDown(rl.KeyS) {
+			verAcc += ACC / 10
+
+			s.Paricles = append(
+				s.Paricles,
+				p.Initalize(
+					rl.Vector2{X: 11, Y: 0},
+					rl.Vector2{X: s.Position.X + 11, Y: s.Position.Y},
+					s.Direction+rand.Float32()*12-2-180,
+					(rand.Float32()*2)))
+		}
+
+		if rl.IsKeyDown(rl.KeyA) {
+			verSpin += -TURN_RATE
+
+			s.Paricles = append(
+				s.Paricles,
+				p.Initalize(
+					rl.Vector2{X: 5, Y: -8},
+					rl.Vector2{X: s.Position.X + 5, Y: s.Position.Y - 8},
+					s.Direction+rand.Float32()*2-90,
+					(rand.Float32())))
+
+			s.Paricles = append(
+				s.Paricles,
+				p.Initalize(
+					rl.Vector2{X: 5, Y: -8},
+					rl.Vector2{X: s.Position.X + 5, Y: s.Position.Y - 8},
+					s.Direction+rand.Float32()*2+90,
+					(rand.Float32())))
+		}
+
+		if rl.IsKeyDown(rl.KeyD) {
+			verSpin += TURN_RATE
+
+			s.Paricles = append(
+				s.Paricles,
+				p.Initalize(
+					rl.Vector2{X: 5, Y: 8},
+					rl.Vector2{X: s.Position.X + 5, Y: s.Position.Y + 8},
+					s.Direction+rand.Float32()*2+90,
+					(rand.Float32())))
+
+			s.Paricles = append(
+				s.Paricles,
+				p.Initalize(
+					rl.Vector2{X: 5, Y: 8},
+					rl.Vector2{X: s.Position.X + 5, Y: s.Position.Y + 8},
+					s.Direction+rand.Float32()*2-90,
+					(rand.Float32())))
+		}
 	}
-
-	if rl.IsKeyDown(rl.KeyS) {
-		horAcc += ACC / 10
-
-		s.Paricles = append(
-			s.Paricles,
-			p.Initalize(
-				rl.Vector2{X: 11, Y: 0},
-				rl.Vector2{X: s.Position.X + 11, Y: s.Position.Y},
-				s.Direction+rand.Float32()*12-2-180,
-				(rand.Float32()*2)))
-	}
-
-	if rl.IsKeyDown(rl.KeyA) {
-		verSpin += -TURN_RATE
-
-		s.Paricles = append(
-			s.Paricles,
-			p.Initalize(
-				rl.Vector2{X: 5, Y: -8},
-				rl.Vector2{X: s.Position.X + 5, Y: s.Position.Y - 8},
-				s.Direction+rand.Float32()*2-90,
-				(rand.Float32())))
-
-		s.Paricles = append(
-			s.Paricles,
-			p.Initalize(
-				rl.Vector2{X: 5, Y: -8},
-				rl.Vector2{X: s.Position.X + 5, Y: s.Position.Y - 8},
-				s.Direction+rand.Float32()*2+90,
-				(rand.Float32())))
-	}
-
-	if rl.IsKeyDown(rl.KeyD) {
-		verSpin += TURN_RATE
-
-		s.Paricles = append(
-			s.Paricles,
-			p.Initalize(
-				rl.Vector2{X: 5, Y: 8},
-				rl.Vector2{X: s.Position.X + 5, Y: s.Position.Y + 8},
-				s.Direction+rand.Float32()*2+90,
-				(rand.Float32())))
-
-		s.Paricles = append(
-			s.Paricles,
-			p.Initalize(
-				rl.Vector2{X: 5, Y: 8},
-				rl.Vector2{X: s.Position.X + 5, Y: s.Position.Y + 8},
-				s.Direction+rand.Float32()*2-90,
-				(rand.Float32())))
-	}
-
 	// Update the ship's direction
 	s.Direction += float32(verSpin)
 
 	// Calculate the acceleration components
 	rad := s.Direction * (math.Pi / 180.0) // Convert direction to radians
 	s.Acceleration = rl.Vector2{
-		X: float32(math.Cos(float64(rad))) * float32(horAcc),
-		Y: float32(math.Sin(float64(rad))) * float32(horAcc),
+		X: float32(math.Cos(float64(rad))) * float32(verAcc),
+		Y: float32(math.Sin(float64(rad))) * float32(verAcc),
 	}
+
+	rad = (s.Direction + 270) * (math.Pi / 180.0) // Convert direction to radians
+	s.Acceleration.X += float32(math.Cos(float64(rad))) * float32(horAcc)
+	s.Acceleration.Y += float32(math.Sin(float64(rad))) * float32(horAcc)
 
 }
 
