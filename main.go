@@ -47,7 +47,7 @@ func initalization() *State {
 	}
 
 	rl.InitWindow(state.WindowWidth, state.WindowHeight, "")
-	rl.SetTargetFPS(15)
+	rl.SetTargetFPS(120)
 
 	return state
 }

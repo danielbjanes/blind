@@ -7,15 +7,14 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-const ENTROPY = 0.01
+const ENTROPY = 0.1
 
 type ThrustParticle struct {
-	Position           rl.Vector2
-	Velocity           rl.Vector2
-	Ttl                int32
-	Direction          float32
-	Magnitude          float32
-	AccelerationScaler float32
+	Position  rl.Vector2
+	Velocity  rl.Vector2
+	Ttl       int32
+	Direction float32
+	Magnitude float32
 }
 
 func Initalize(position rl.Vector2, ttl int32, direction float32, magnitude float32) *ThrustParticle {
@@ -27,12 +26,11 @@ func Initalize(position rl.Vector2, ttl int32, direction float32, magnitude floa
 	}
 
 	return &ThrustParticle{
-		Position:           position,
-		Ttl:                ttl,
-		Direction:          direction,
-		Velocity:           initVel,
-		Magnitude:          magnitude,
-		AccelerationScaler: 1,
+		Position:  position,
+		Ttl:       ttl,
+		Direction: direction,
+		Velocity:  initVel,
+		Magnitude: magnitude,
 	}
 }
 
@@ -43,25 +41,18 @@ func (particle *ThrustParticle) Update() {
 
 func (p *ThrustParticle) applyForce() {
 
-	if p.AccelerationScaler-ENTROPY > 0 {
-		p.AccelerationScaler -= ENTROPY
-	} else {
-		p.AccelerationScaler = 0
-	}
-	// p.AccelerationScaler -= ENTROPY
-
 	// Calculate the acceleration components
-	rad := p.Direction - 180*(math.Pi/180.0) // Convert direction to radians
+	rad := (p.Direction - 180) * (math.Pi / 180.0) // Convert direction to radians
 	acceleration := rl.Vector2{
-		X: float32(math.Cos(float64(rad))) * p.Magnitude * (float32(p.AccelerationScaler)),
-		Y: float32(math.Sin(float64(rad))) * p.Magnitude * (float32(p.AccelerationScaler)),
+		X: float32(math.Cos(float64(rad))) * ENTROPY,
+		Y: float32(math.Sin(float64(rad))) * ENTROPY,
 	}
 
 	fmt.Println("--")
 	fmt.Printf("vel: %f, %f\n", p.Velocity.X, p.Velocity.Y)
-	fmt.Printf("acc: %f, %f\n", acceleration.X, acceleration.Y)
+	// fmt.Printf("acc: %f, %f\n", acceleration.X, acceleration.Y)
 
-	if p.AccelerationScaler > 0 {
+	if math.Abs(float64(p.Velocity.X))+math.Abs(float64(acceleration.X)) > 0.1 {
 		p.Velocity.X += acceleration.X
 		p.Velocity.Y += acceleration.Y
 	}
